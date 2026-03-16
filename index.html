@@ -329,6 +329,30 @@
 
     .hidden { display: none !important; }
 
+    /* ─── Extra time checkbox ─── */
+    .extra-time-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff8ee;
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
+      transition: background .18s;
+      margin-top: 4px;
+    }
+    .extra-time-row:hover { background: #fff3dd; }
+    .extra-time-row input[type="checkbox"] {
+      width: 20px; height: 20px;
+      accent-color: var(--gold-dark);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .extra-time-label { display: flex; flex-direction: column; gap: 2px; }
+    .extra-time-label strong { font-size: .97rem; color: #7a3a1a; }
+    .extra-time-label span   { font-size: .8rem;  color: var(--muted); }
+
     /* ─── Footer ─── */
     /* ─── Fixed timer bar ─── */
     #timerBar {
@@ -406,6 +430,7 @@
 const FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSejOxa8L7ak7Q7LXhrU7xSKsXcico3y2FuwOFCkJ5Arr1njtw/formResponse";
 const ENTRY = {
   studentName: "entry.1066323799",
+  time:        "entry.489788613",
   class:       "entry.440967521",
   grade:       "entry.1775989568",
 };
@@ -413,10 +438,13 @@ const ENTRY = {
 // ════════════════════════════════════════════════
 //  TIMER CONFIG
 // ════════════════════════════════════════════════
-const EXAM_MINUTES = 15;
+const EXAM_MINUTES_BASE  = 15;
+const EXAM_MINUTES_EXTRA = 20;
 let timerInterval  = null;
 let timerEnd       = null;
+let examStartTime  = null;
 let timeLocked     = false;
+let extraTime      = false;
 
 // ════════════════════════════════════════════════
 //  QUESTION DATA
@@ -726,8 +754,10 @@ function initShuffle(name) {
 //  TIMER
 // ════════════════════════════════════════════════
 function startTimer() {
-  timerEnd   = Date.now() + EXAM_MINUTES * 60 * 1000;
-  timeLocked = false;
+  const minutes = extraTime ? EXAM_MINUTES_EXTRA : EXAM_MINUTES_BASE;
+  examStartTime = Date.now();
+  timerEnd      = examStartTime + minutes * 60 * 1000;
+  timeLocked    = false;
   timerInterval && clearInterval(timerInterval);
   document.getElementById('timerBar').classList.add('active');
   document.body.classList.add('exam-active');
@@ -748,7 +778,7 @@ function tickTimer() {
   if (!el) return;
 
   const remaining = timerEnd - Date.now();
-  const total     = EXAM_MINUTES * 60 * 1000;
+  const total     = (extraTime ? EXAM_MINUTES_EXTRA : EXAM_MINUTES_BASE) * 60 * 1000;
 
   if (remaining <= 0) {
     el.textContent        = "⏰ הזמן נגמר!";
@@ -813,7 +843,7 @@ function renderTitlePage() {
           <li>עלייך לענות על <strong>20 שאלות בלבד</strong> לבחירתך.</li>
           <li>כל תשובה נכונה שווה <strong>5 נקודות</strong> (מקסימום 100).</li>
           <li>ניתן לנווט חופשית בין השאלות ולחזור ולשנות תשובות.</li>
-          <li>זמן המבחן: <strong>15 דקות</strong>. לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
+          <li>זמן המבחן: <strong>15 דקות</strong> (או 20 דקות עם תוספת זמן). לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
           <li>כל תלמיד/ה רשאי/ת להגיש את המבחן <strong>פעם אחת בלבד</strong>.</li>
         </ul>
       </div>
@@ -834,7 +864,15 @@ function renderTitlePage() {
         </div>
       </div>
 
-      <button class="btn btn-primary btn-full" onclick="handleStart()">
+      <label class="extra-time-row">
+        <input type="checkbox" id="extraTimeCheck" />
+        <span class="extra-time-label">
+          <strong>תוספת זמן</strong>
+          <span>זמן המבחן יוארך ל-20 דקות</span>
+        </span>
+      </label>
+
+      <button class="btn btn-primary btn-full" onclick="handleStart()" style="margin-top:20px;">
         התחל/י במבחן ←
       </button>
     </div>
@@ -868,6 +906,7 @@ function handleStart() {
 
   studentName  = name;
   studentClass = cls;
+  extraTime    = document.getElementById('extraTimeCheck').checked;
   currentIndex = 0;
   answers = new Array(TOTAL_Q).fill(null);
   initShuffle(name + cls);
@@ -1080,6 +1119,8 @@ async function submitExam() {
     body.append(ENTRY.studentName, studentName);
     body.append(ENTRY.class,       studentClass);
     body.append(ENTRY.grade,       String(grade));
+    const elapsedMin = Math.ceil((Date.now() - examStartTime) / 60000);
+    body.append(ENTRY.time,        String(elapsedMin));
 
     await fetch(FORM_ACTION, {
       method: 'POST',
