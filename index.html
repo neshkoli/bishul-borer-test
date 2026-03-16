@@ -330,7 +330,49 @@
     .hidden { display: none !important; }
 
     /* ─── Footer ─── */
-    .site-footer {
+    /* ─── Fixed timer bar ─── */
+    #timerBar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      font-family: 'Heebo', sans-serif;
+    }
+    #timerBar.active { display: flex; }
+    #timerDisplay {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .04em;
+      min-width: 70px;
+      text-align: center;
+    }
+    #timerBar .timer-label {
+      font-size: .8rem;
+      color: var(--muted);
+    }
+    #timerBar .timer-progress {
+      flex: 1;
+      max-width: 200px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    #timerBar .timer-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: 99px;
+      transition: width 1s linear;
+    }
+    /* push page content down when timer bar is visible */
+    body.exam-active #app { padding-top: 52px; }
       width: 100%;
       max-width: 680px;
       text-align: center;
@@ -347,6 +389,11 @@
   </style>
 </head>
 <body>
+<div id="timerBar">
+  <span class="timer-label">⏱ זמן שנותר:</span>
+  <div class="timer-progress"><div class="timer-progress-fill" id="timerFill" style="width:100%"></div></div>
+  <span id="timerDisplay">15:00</span>
+</div>
 <div id="app"></div>
 
 <script>
@@ -679,6 +726,8 @@ function startTimer() {
   timerEnd   = Date.now() + EXAM_MINUTES * 60 * 1000;
   timeLocked = false;
   timerInterval && clearInterval(timerInterval);
+  document.getElementById('timerBar').classList.add('active');
+  document.body.classList.add('exam-active');
   timerInterval = setInterval(tickTimer, 1000);
   tickTimer();
 }
@@ -686,33 +735,43 @@ function startTimer() {
 function stopTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
+  document.getElementById('timerBar').classList.remove('active');
+  document.body.classList.remove('exam-active');
 }
 
 function tickTimer() {
-  const el = document.getElementById('timerDisplay');
-  if (!el) { stopTimer(); return; }
+  const el   = document.getElementById('timerDisplay');
+  const fill = document.getElementById('timerFill');
+  if (!el) return;
 
   const remaining = timerEnd - Date.now();
+  const total     = EXAM_MINUTES * 60 * 1000;
+
   if (remaining <= 0) {
+    el.textContent        = "⏰ הזמן נגמר!";
+    el.style.color        = "var(--gold-dark)";
+    el.style.fontWeight   = "800";
+    if (fill) fill.style.width = "0%";
     if (!timeLocked) {
       timeLocked = true;
       lockExam();
     }
-    el.textContent = "⏰ הזמן נגמר!";
-    el.style.color = "var(--gold-dark)";
-    el.style.fontWeight = "800";
     return;
   }
 
   const m = Math.floor(remaining / 60000);
   const s = Math.floor((remaining % 60000) / 1000);
-  el.textContent = `⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  if (fill) fill.style.width = (remaining / total * 100).toFixed(1) + "%";
+
   if (remaining < 120000) {
-    el.style.color = "var(--gold-dark)";
+    el.style.color      = "var(--gold-dark)";
     el.style.fontWeight = "700";
+    if (fill) fill.style.background = "linear-gradient(90deg, var(--gold-dark), var(--gold))";
   } else {
-    el.style.color = "var(--muted)";
-    el.style.fontWeight = "500";
+    el.style.color      = "var(--muted)";
+    el.style.fontWeight = "600";
   }
 }
 
@@ -843,7 +902,7 @@ function renderQuestionPage() {
   document.getElementById('app').innerHTML = `
     <div class="top-bar">
       <span class="logo-badge">📖 מבחן הלכות שבת</span>
-      <span id="timerDisplay" class="progress-text">⏱ 15:00</span>
+      <span class="progress-text">שאלה ${currentIndex + 1} מתוך ${TOTAL_Q}</span>
     </div>
     <div class="progress-wrap">
       <div class="progress-fill" style="width:${progress}%"></div>
@@ -926,7 +985,7 @@ function renderSummaryPage() {
   document.getElementById('app').innerHTML = `
     <div class="top-bar">
       <span class="logo-badge">📖 מבחן הלכות שבת</span>
-      <span id="timerDisplay" class="progress-text">⏱</span>
+      <span class="progress-text">סיכום לפני הגשה</span>
     </div>
 
     <div class="card">
