@@ -373,17 +373,20 @@
     }
     /* push page content down when timer bar is visible */
     body.exam-active #app { padding-top: 52px; }
+
+    /* ─── Footer ─── */
+    .site-footer {
       width: 100%;
       max-width: 680px;
-      text-align: center;
-      padding: 20px 0 8px;
-      font-size: .75rem;
+      text-align: right;
+      padding: 10px 0 6px;
+      font-size: .7rem;
       color: var(--muted);
-      opacity: .7;
+      opacity: .6;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      justify-content: flex-end;
+      gap: 5px;
     }
     .site-footer svg { flex-shrink: 0; }
   </style>
@@ -1160,12 +1163,7 @@ renderTitlePage();
 </script>
 
 <footer class="site-footer">
-  <svg width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/>
-    <path d="M7 10.5c0-1.657 1.343-3 3-3s3 1.343 3 3-1.343 3-3 3-3-1.343-3-3z" stroke="currentColor" stroke-width="1.4"/>
-    <path d="M10 4v2M10 14v2M4 10h2M14 10h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-  </svg>
-  <span>© אשכולי טכנולוגיות למידה</span>
+  <span>© אשכולי 🍇 טכנולוגיות למידה</span>
 </footer>
 
 </body>
