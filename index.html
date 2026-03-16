@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מבחן בהלכות שבת</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:       #2d6a4f;
+      --primary-light: #52b788;
+      --primary-pale:  #d8f3dc;
+      --accent:        #b7e4c7;
+      --gold:          #f4a261;
+      --gold-dark:     #e76f51;
+      --bg:            #f6fdf8;
+      --surface:       #ffffff;
+      --border:        #cce5d6;
+      --text:          #1b3a2e;
+      --muted:         #5a7a68;
+      --radius:        14px;
+      --shadow:        0 4px 24px rgba(45,106,79,.10);
+      --shadow-lg:     0 8px 40px rgba(45,106,79,.16);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px 40px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 680px;
+      padding: 36px 32px;
+      animation: fadeIn .35s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-badge {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: .82rem;
+      font-weight: 600;
+    }
+
+    .progress-text { font-size: .84rem; color: var(--muted); font-weight: 500; }
+
+    .progress-wrap {
+      width: 100%;
+      max-width: 680px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 99px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+
+    /* ─── Title page ─── */
+    .title-hero { text-align: center; margin-bottom: 28px; }
+    .title-hero .hero-img {
+      width: 100%; max-height: 220px; object-fit: cover;
+      border-radius: 12px; margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.18);
+    }
+    .title-hero h1 { font-size: 1.7rem; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+    .title-hero h2 { font-size: 1rem; font-weight: 400; color: var(--muted); }
+
+    .instructions-box {
+      background: var(--primary-pale);
+      border-right: 4px solid var(--primary);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      font-size: .95rem;
+    }
+    .instructions-box strong { color: var(--primary); }
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .form-row-2 { grid-template-columns: 1fr 1fr; }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 7px;
+      font-size: .93rem;
+    }
+    .input-group label .req { color: var(--gold-dark); margin-right: 2px; }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .2s;
+      direction: rtl;
+      appearance: none;
+    }
+    .input-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235a7a68' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 14px center;
+      padding-left: 36px;
+    }
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45,106,79,.12);
+    }
+    .input-group input.error,
+    .input-group select.error { border-color: var(--gold-dark); }
+    .input-group input::placeholder { color: #aac4b4; }
+    .field-error { font-size: .8rem; color: var(--gold-dark); margin-top: 5px; display: none; }
+    .field-error.visible { display: block; }
+
+    /* ─── Already-submitted banner ─── */
+    .already-banner {
+      background: #fff5ee;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .already-banner .ab-icon { font-size: 2rem; margin-bottom: 10px; }
+    .already-banner h3 { font-size: 1.1rem; font-weight: 700; color: #7a3a1a; margin-bottom: 6px; }
+    .already-banner p { font-size: .9rem; color: #8a5a30; }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      user-select: none;
+    }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 3px 12px rgba(45,106,79,.25); }
+    .btn-primary:hover { background: #235c40; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary { background: var(--primary-pale); color: var(--primary); border: 2px solid var(--accent); }
+    .btn-secondary:hover { background: var(--accent); }
+    .btn-outline { background: transparent; color: var(--muted); border: 2px solid var(--border); }
+    .btn-outline:hover { background: var(--bg); border-color: var(--primary); color: var(--primary); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+    .btn-full { width: 100%; }
+
+    /* ─── Question page ─── */
+    .dots-container {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .dots-title { font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: 10px; text-align: center; }
+    .q-dots { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
+    .q-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .18s;
+    }
+    .q-dot.answered { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .q-dot.current  { border-color: var(--gold-dark); box-shadow: 0 0 0 3px rgba(231,111,81,.2); }
+
+    .q-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .q-num {
+      background: var(--primary); color: #fff;
+      border-radius: 8px; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .95rem; flex-shrink: 0;
+    }
+    .q-section { font-size: .78rem; font-weight: 600; color: var(--muted); background: var(--primary-pale); padding: 3px 10px; border-radius: 99px; }
+    .q-text { font-size: 1.05rem; font-weight: 600; margin: 14px 0 20px; line-height: 1.55; }
+
+    .options-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .option-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 16px; border: 2px solid var(--border);
+      border-radius: 10px; cursor: pointer; transition: all .18s; background: #fff;
+    }
+    .option-item:hover { border-color: var(--primary-light); background: var(--primary-pale); }
+    .option-item.selected { border-color: var(--primary); background: var(--primary-pale); }
+    .option-item.selected .opt-letter { background: var(--primary); color: #fff; }
+    .option-item.locked { pointer-events: none; opacity: 0.5; }
+    .option-item.locked.selected { opacity: 1; }
+    .opt-letter {
+      flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+      background: var(--border); color: var(--primary); font-weight: 700;
+      font-size: .85rem; display: flex; align-items: center; justify-content: center;
+      transition: all .18s;
+    }
+    .opt-text { font-size: .97rem; line-height: 1.5; }
+
+    .skip-notice { margin-top: 16px; text-align: center; font-size: .85rem; color: var(--muted); }
+
+    .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+    .nav-row .btn { flex: 1; max-width: 160px; }
+
+    /* ─── Summary ─── */
+    .summary-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0; }
+    .stat-card { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 18px 14px; text-align: center; }
+    .stat-card .stat-num { font-size: 2rem; font-weight: 800; color: var(--primary); }
+    .stat-card .stat-label { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+    .stat-card.warn .stat-num { color: var(--gold-dark); }
+    .stat-card.warn { border-color: var(--gold); }
+
+    .summary-warning {
+      background: #fff5ee; border-right: 4px solid var(--gold-dark);
+      border-radius: 10px; padding: 14px 16px; font-size: .9rem;
+      color: #7a3a1a; margin-bottom: 20px;
+    }
+
+    /* ─── Grade page ─── */
+    .grade-hero { text-align: center; padding: 12px 0 24px; }
+    .grade-circle {
+      width: 150px; height: 150px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; position: relative; box-shadow: var(--shadow-lg);
+    }
+    .grade-inner {
+      width: 118px; height: 118px; border-radius: 50%;
+      background: #fff; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .grade-num { font-size: 2.4rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .grade-label { font-size: .78rem; color: var(--muted); font-weight: 500; }
+    .grade-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+    .grade-msg { font-size: .95rem; color: var(--muted); margin-bottom: 24px; }
+
+    .answers-review { margin-top: 24px; }
+    .answers-review h3 { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+    .review-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--bg); align-items: flex-start; }
+    .review-num { font-weight: 700; color: var(--muted); min-width: 24px; }
+    .review-text { font-size: .9rem; flex: 1; line-height: 1.4; }
+    .badge-correct { color: #1d7d4a; background: #d8f3dc; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
+    .badge-wrong   { color: #b83232; background: #fde0e0; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
+    .badge-skip    { color: #8a6000; background: #fef3cd; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
+
+    .saved-notice {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--primary-pale); border: 2px solid var(--accent);
+      border-radius: 10px; padding: 12px 16px; font-size: .9rem;
+      color: var(--primary); font-weight: 600; margin-top: 20px;
+    }
+    .saved-notice.error { background: #fde0e0; border-color: #f5a0a0; color: #b83232; }
+
+    /* ─── Spinner ─── */
+    .spinner {
+      width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.4);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 500px) {
+      .card { padding: 24px 18px; }
+      .title-hero h1 { font-size: 1.4rem; }
+      .btn { padding: 12px 18px; font-size: .95rem; }
+      .form-row-2 { grid-template-columns: 1fr; }
+      .grade-circle { width: 130px; height: 130px; }
+      .grade-inner { width: 100px; height: 100px; }
+      .grade-num { font-size: 2rem; }
+    }
+
+    .hidden { display: none !important; }
+
+    /* ─── Footer ─── */
+    .site-footer {
+      width: 100%;
+      max-width: 680px;
+      text-align: center;
+      padding: 20px 0 8px;
+      font-size: .75rem;
+      color: var(--muted);
+      opacity: .7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .site-footer svg { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ════════════════════════════════════════════════
+//  GOOGLE FORM CONFIG
+// ════════════════════════════════════════════════
+const FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSejOxa8L7ak7Q7LXhrU7xSKsXcico3y2FuwOFCkJ5Arr1njtw/formResponse";
+const ENTRY = {
+  studentName: "entry.1066323799",
+  class:       "entry.440967521",
+  grade:       "entry.1775989568",
+};
+
+// ════════════════════════════════════════════════
+//  TIMER CONFIG
+// ════════════════════════════════════════════════
+const EXAM_MINUTES = 15;
+let timerInterval  = null;
+let timerEnd       = null;
+let timeLocked     = false;
+
+// ════════════════════════════════════════════════
+//  QUESTION DATA
+// ════════════════════════════════════════════════
+// Correct answers are base64-encoded to avoid plain-text exposure in source
+const _k = ["15I=","15A=","15M=","15E=","15I=","15A=","15M=","15E=","15A=","15I=","15M=","15E=","15A=","15I=","15M=","15E=","15A=","15I=","15E=","15M=","15A=","15I="];
+const _d = i => decodeURIComponent(escape(atob(_k[i])));
+
+const QUESTIONS = [
+  {
+    id: 1, section: "חלק א׳ – מלאכת בישול",
+    text: "מהי המשמעות הרוחנית של מלאכות הכנת המזון בשבת על פי ההקדמה?",
+    options: [
+      { letter: "א", text: "הוכחה לכך שהאדם תמיד צריך לעמול בזיעת אפו." },
+      { letter: "ב", text: "זיכרון לימי החול שבהם האדם שולט בטבע ללא הגבלה." },
+      { letter: "ג", text: "עליה למדרגה של מעין עולם הבא, שבה אנו שובתים מהצורך לטרוח על תיקונו של עולם בעקבות החטא." },
+      { letter: "ד", text: "הדגשה שרק עבודה פיזית קשה מובילה לקדושה." },
+    ],
+    correct: _d(0)
+  },
+  {
+    id: 2, section: "חלק א׳ – מלאכת בישול",
+    text: "מהו הכלל היסודי המגדיר את מלאכת הבישול?",
+    options: [
+      { letter: "א", text: "הכשרת או השבחת מאכל על ידי חום אש." },
+      { letter: "ב", text: "כל פעולה המפחיתה את נפח המאכל." },
+      { letter: "ג", text: "רק פעולה שמרככת מאכל קשה (כמו ירקות)." },
+      { letter: "ד", text: "כל שינוי בטעם המאכל, גם ללא חום." },
+    ],
+    correct: _d(1)
+  },
+  {
+    id: 3, section: "חלק א׳ – מלאכת בישול",
+    text: "אדם שחימם מחבת על האש, כיבה את האש ואז טיגן עליה ביצה:",
+    options: [
+      { letter: "א", text: "פטור, כי האש לא דלקה בזמן הטיגון." },
+      { letter: "ב", text: "עבר על איסור דרבנן בלבד משום מראית עין." },
+      { letter: "ג", text: "מותר לכתחילה, כי חום המחבת הולך ונחלש." },
+      { letter: "ד", text: "עבר על איסור תורה משום \"תולדות האש\"." },
+    ],
+    correct: _d(2)
+  },
+  {
+    id: 4, section: "חלק א׳ – מלאכת בישול",
+    text: "מה הדין לגבי בישול במיקרוגל בשבת?",
+    options: [
+      { letter: "א", text: "מותר, כי הוא פועל על גלי רדיו ולא על חום." },
+      { letter: "ב", text: "אסור מהתורה, כי זו אחת מדרכי הבישול המקובלות כיום." },
+      { letter: "ג", text: "אסור רק מדברי חכמים כי אין בו אש ממשית." },
+      { letter: "ד", text: "מותר רק לחימום מים לצורך חולה." },
+    ],
+    correct: _d(3)
+  },
+  {
+    id: 5, section: "חלק א׳ – מלאכת בישול",
+    text: "מהי ההגדרה ההלכתית למאכל שנחשב \"מבושל כל צרכו\"?",
+    options: [
+      { letter: "א", text: "מאכל שניתן לאוכלו בשעת הדחק (מאכל בן דרוסאי)." },
+      { letter: "ב", text: "מאכל שהגיע לטמפרטורה של 71 מעלות." },
+      { letter: "ג", text: "מאכל שניתן להגישו לאורחים ללא צורך להתנצל." },
+      { letter: "ד", text: "מאכל ששינה את צבעו המקורי לחלוטין." },
+    ],
+    correct: _d(4)
+  },
+  {
+    id: 6, section: "חלק א׳ – מלאכת בישול",
+    text: "מהי המחלוקת היסודית בין השולחן ערוך לרמב\"ם בנוגע לחימום מרק קר שבושל לפני שבת?",
+    options: [
+      { letter: "א", text: "לדעת השולחן ערוך יש \"בישול אחר בישול\" בנוזל קר ואסור לחממו, ולרמב\"ם אין איסור." },
+      { letter: "ב", text: "לדעת השולחן ערוך מותר לחממו כי \"אין בישול אחר בישול\", ולרמב\"ם אסור." },
+      { letter: "ג", text: "שניהם אוסרים, אך נחלקו אם האיסור הוא מהתורה או מדברי חכמים." },
+      { letter: "ד", text: "שניהם מתירים, אך נחלקו אם מותר להרתיח אותו או רק לחמם." },
+    ],
+    correct: _d(5)
+  },
+  {
+    id: 7, section: "חלק א׳ – מלאכת בישול",
+    text: "מהו ההבדל המרכזי בין \"כלי ראשון\" ל\"כלי שני\"?",
+    options: [
+      { letter: "א", text: "כלי ראשון הוא תמיד על האש, וכלי שני הוא תמיד קר." },
+      { letter: "ב", text: "אין הבדל הלכתי ביניהם לעניין בישול." },
+      { letter: "ג", text: "כלי ראשון מבשל רק נוזלים, וכלי שני מבשל רק מוצקים." },
+      { letter: "ד", text: "כלי ראשון שומר על חומו בגלל דפנותיו החמות, ולכן מבשל. כלי שני מתקרר מהר בגלל דפנותיו." },
+    ],
+    correct: _d(6)
+  },
+  {
+    id: 8, section: "חלק א׳ – מלאכת בישול",
+    text: "מהם \"קלי הבישול\"?",
+    options: [
+      { letter: "א", text: "מאכלים שמתבשלים רק בחום גבוה מאוד." },
+      { letter: "ב", text: "מאכלים שמתבשלים בקלות ואסור לבשלם אפילו בכלי שני (כמו דגים מסוימים)." },
+      { letter: "ג", text: "מאכלים שאין בהם איסור בישול כלל." },
+      { letter: "ד", text: "ירקות קשים שבישולם לוקח זמן רב." },
+    ],
+    correct: _d(7)
+  },
+  {
+    id: 9, section: "חלק א׳ – מלאכת בישול",
+    text: "מה הדרך המומלצת להכנת תה בשבת לכתחילה?",
+    options: [
+      { letter: "א", text: "להכין תמצית נוזלית מערב שבת ולמזוג אותה למים חמים בכלי שני." },
+      { letter: "ב", text: "להכניס את השקית לכלי ראשון שאינו על האש." },
+      { letter: "ג", text: "לשפוך מים מהמיחם ישירות על שקית התה (עירוי)." },
+      { letter: "ד", text: "אין אפשרות להכין תה בשבת בשום דרך." },
+    ],
+    correct: _d(8)
+  },
+  {
+    id: 10, section: "חלק א׳ – מלאכת בישול",
+    text: "מה הדין לגבי \"גוש חם\" (כמו תפוח אדמה לוהט) שהועבר לכלי שלישי?",
+    options: [
+      { letter: "א", text: "הוא נחשב ככלי שלישי ואינו מבשל כלל." },
+      { letter: "ב", text: "מותר לשים עליו תבלינים חיים ללא הגבלה." },
+      { letter: "ג", text: "לדעת המחמירים הוא נחשב ככלי ראשון כי חוממו נאצר בתוכו, ויש להיזהר מלתבלו." },
+      { letter: "ד", text: "מותר להניחו רק בתוך רוטב קר." },
+    ],
+    correct: _d(9)
+  },
+  {
+    id: 11, section: "חלק א׳ – מלאכת בישול",
+    text: "מה הדין לגבי ערבוב (הגסה) של תבשיל שמונח על הפלטה?",
+    options: [
+      { letter: "א", text: "מותר לערבב אם התבשיל מבושל כל צרכו." },
+      { letter: "ב", text: "מותר להוציא בכף מתוך הסיר כשהוא על האש לכל הדעות." },
+      { letter: "ג", text: "מותר לערבב רק אם מורידים את הסיר מהפלטה לרצפה." },
+      { letter: "ד", text: "אסור מהתורה אם התבשיל אינו מבושל כל צרכו, וגם כשהוא מוכן – לכתחילה אין לערבב על האש." },
+    ],
+    correct: _d(10)
+  },
+  {
+    id: 12, section: "חלק א׳ – מלאכת בישול",
+    text: "אילו תנאים צריכים להתקיים כדי שיהיה מותר \"להחזיר\" סיר לפלטה בשבת (לדעת המחמירים בהנחה)?",
+    options: [
+      { letter: "א", text: "התבשיל קר לגמרי, והוא מחזיר אותו למקום רחוק מהחום." },
+      { letter: "ב", text: "מבושל כל צרכו, דעתו להחזירו, ידו תמשיך לאחוז בו, ולא הונח על הרצפה." },
+      { letter: "ג", text: "מבושל כל צרכו, והפלטה כבויה ברגע ההחזרה." },
+      { letter: "ד", text: "מותר להחזיר רק אם הסיר היה על הרצפה פחות מדקה." },
+    ],
+    correct: _d(11)
+  },
+  {
+    id: 13, section: "חלק א׳ – מלאכת בישול",
+    text: "מהו איסור \"הטמנה\" בשבת?",
+    options: [
+      { letter: "א", text: "עטיפת הסיר מכל צדדיו בדבר השומר על חומו (מגבת/שמיכה)." },
+      { letter: "ב", text: "הנחת סיר על גבי פלטה חשמלית." },
+      { letter: "ג", text: "הכנסת כף לתוך הסיר כדי לבדוק את חומו." },
+      { letter: "ד", text: "הנחת סיר בתוך תנור קר." },
+    ],
+    correct: _d(12)
+  },
+  {
+    id: 14, section: "חלק א׳ – מלאכת בישול",
+    text: "שימוש במים חמים מהברז בשבת (\"בוילר\" שהודלק לפני שבת):",
+    options: [
+      { letter: "א", text: "מותר תמיד, כי המים כבר חמים." },
+      { letter: "ב", text: "מותר רק אם הדוד פועל באותו רגע." },
+      { letter: "ג", text: "אסור אם המים לוהטים, כי כניסת מים קרים לדוד תגרום לבישולם." },
+      { letter: "ד", text: "מותר רק לצורך שטיפת פנים וידיים." },
+    ],
+    correct: _d(13)
+  },
+  {
+    id: 15, section: "חלק ב׳ – מלאכת בורר",
+    text: "מהם שלושת התנאים המצטברים להיתר ברירה בשבת (\"דרך אכילה\")?",
+    options: [
+      { letter: "א", text: "פסולת מתוך אוכל, בכלי, ולאלתר." },
+      { letter: "ב", text: "אוכל מתוך פסולת, בכלי, לצורך סעודת מחר." },
+      { letter: "ג", text: "הפרדת שני מינים, לאלתר, אפילו בכלי." },
+      { letter: "ד", text: "אוכל מתוך פסולת, ביד, ולאלתר (סמוך לסעודה)." },
+    ],
+    correct: _d(14)
+  },
+  {
+    id: 16, section: "חלק ב׳ – מלאכת בורר",
+    text: "בתערובת של אגוזים ושקדים, כשהאדם רוצה לאכול רק את האגוזים:",
+    options: [
+      { letter: "א", text: "מותר לו להוציא את השקדים ולהשאיר את האגוזים." },
+      { letter: "ב", text: "האגוזים נחשבים \"אוכל\" והשקדים נחשבים \"פסולת\"." },
+      { letter: "ג", text: "שניהם נחשבים \"אוכל\" ומותר להפריד ביניהם בכל דרך." },
+      { letter: "ד", text: "אסור להפריד ביניהם כלל כי שניהם מיני מאכל." },
+    ],
+    correct: _d(15)
+  },
+  {
+    id: 17, section: "חלק ב׳ – מלאכת בורר",
+    text: "מה הדין אם נפלה קליפת ביצה לתוך סלט ביצים?",
+    options: [
+      { letter: "א", text: "אסור להוציא את הקליפה לבדה, אלא יוציא אותה עם מעט מהסלט." },
+      { letter: "ב", text: "מותר להוציא את הקליפה לבדה בזהירות." },
+      { letter: "ג", text: "חייבים לזרוק את כל הסלט מחשש איסור בורר." },
+      { letter: "ד", text: "מותר להוציא את הקליפה רק בעזרת מזלג." },
+    ],
+    correct: _d(16)
+  },
+  {
+    id: 18, section: "חלק ב׳ – מלאכת בורר",
+    text: "מתי מותר לאישה להכין את הסלט (הדורש ברירה) לפני הסעודה?",
+    options: [
+      { letter: "א", text: "רק ברגע שהאורחים מתיישבים לאכול." },
+      { letter: "ב", text: "שלוש שעות לפני הסעודה, ללא קשר למספר הסועדים." },
+      { letter: "ג", text: "בזמן שרגילים להכין את הסעודה (סמוך לסעודה), וזה תלוי בגודל הסעודה." },
+      { letter: "ד", text: "אסור להכין סלט בשבת אם יש בו תערובת." },
+    ],
+    correct: _d(17)
+  },
+  {
+    id: 19, section: "חלק ב׳ – מלאכת בורר",
+    text: "האם מותר להשתמש ב\"מקלף\" (קולפן) לקילוף תפוחים בשבת?",
+    options: [
+      { letter: "א", text: "אסור לכל הדעות, כי זה כלי המיועד לברירה." },
+      { letter: "ב", text: "יש אוסרים כי המקלף נחשב כלי ברירה, ויש מקילים (והרוצה להקל יש לו על מה לסמוך)." },
+      { letter: "ג", text: "מותר לכל הדעות, כי הקליפה נאכלת." },
+      { letter: "ד", text: "מותר רק אם מקלפים לכמות של עשרה אנשים ומעלה." },
+    ],
+    correct: _d(18)
+  },
+  {
+    id: 20, section: "חלק ב׳ – מלאכת בורר",
+    text: "כיצד יש לנהוג עם עצמות בדגים או בבשר בזמן האכילה?",
+    options: [
+      { letter: "א", text: "אסור להוציא את העצם, אלא יש לאכול את הבשר מסביב לעצם." },
+      { letter: "ב", text: "מותר להוציא את העצמות רק אם הן יבשות ואינן דבוקות לבשר." },
+      { letter: "ג", text: "מותר להוציא רק בעזרת כלי מיוחד לברירת דגים." },
+      { letter: "ד", text: "מותר להוציא את העצם תוך כדי אכילה כי זו \"דרך אכילה\"." },
+    ],
+    correct: _d(19)
+  },
+  {
+    id: 21, section: "חלק ב׳ – מלאכת בורר",
+    text: "מה הדין לגבי סינון מיץ תפוזים שיש בו חלקיקי פרי?",
+    options: [
+      { letter: "א", text: "מותר, כיוון שרוב בני האדם שותים את המיץ גם ללא סינון." },
+      { letter: "ב", text: "אסור, כי הסינון מכשיר את המיץ לשתייה." },
+      { letter: "ג", text: "אסור מהתורה משום מלאכת \"מרקד\"." },
+      { letter: "ד", text: "מותר רק אם מסננים דרך בד ולא דרך מסננת." },
+    ],
+    correct: _d(20)
+  },
+  {
+    id: 22, section: "חלק ב׳ – מלאכת בורר",
+    text: "האם קיים איסור בורר בצעצועים או בסכו\"ם?",
+    options: [
+      { letter: "א", text: "לא, איסור בורר קיים רק במאכלים." },
+      { letter: "ב", text: "מותר להפריד צעצועים מעורבים רק אם הם גדולים מאוד." },
+      { letter: "ג", text: "כן, ודינם כמאכלים: מותר לקחת את מה שצריך לשימוש מיידי, אך אסור למיין." },
+      { letter: "ד", text: "מותר למיין סכו\"ם לאחר השטיפה כדי לסדר את המגירה." },
+    ],
+    correct: _d(21)
+  },
+];
+
+const TOTAL_Q  = 22;
+const REQUIRED = 20;
+const POINTS   = 5;
+const CLASSES  = ["יב 2", "יב 4", "יב 5"];
+
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let studentName  = "";
+let studentClass = "";
+let currentIndex = 0;
+let answers      = new Array(TOTAL_Q).fill(null);
+let shuffledOpts = [];
+
+// ─── Submission key: stored in localStorage ────
+// Key format: "halacha_submitted_<name>_<class>"
+function submissionKey(name, cls) {
+  return "halacha_submitted_" + (name + "_" + cls).trim().toLowerCase().replace(/\s+/g, "_");
+}
+function hasAlreadySubmitted(name, cls) {
+  return !!localStorage.getItem(submissionKey(name, cls));
+}
+function markSubmitted(name, cls) {
+  localStorage.setItem(submissionKey(name, cls), "1");
+}
+
+// ─── Shuffle helpers ───────────────────────────
+function seededRNG(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function shuffleWithSeed(arr, rng) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initShuffle(name) {
+  let hash = 0;
+  for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) | 0;
+  const rng = seededRNG(hash);
+  shuffledOpts = QUESTIONS.map(q => shuffleWithSeed(q.options, rng));
+}
+
+// ════════════════════════════════════════════════
+//  TIMER
+// ════════════════════════════════════════════════
+function startTimer() {
+  timerEnd   = Date.now() + EXAM_MINUTES * 60 * 1000;
+  timeLocked = false;
+  timerInterval && clearInterval(timerInterval);
+  timerInterval = setInterval(tickTimer, 1000);
+  tickTimer();
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function tickTimer() {
+  const el = document.getElementById('timerDisplay');
+  if (!el) { stopTimer(); return; }
+
+  const remaining = timerEnd - Date.now();
+  if (remaining <= 0) {
+    if (!timeLocked) {
+      timeLocked = true;
+      lockExam();
+    }
+    el.textContent = "⏰ הזמן נגמר!";
+    el.style.color = "var(--gold-dark)";
+    el.style.fontWeight = "800";
+    return;
+  }
+
+  const m = Math.floor(remaining / 60000);
+  const s = Math.floor((remaining % 60000) / 1000);
+  el.textContent = `⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if (remaining < 120000) {
+    el.style.color = "var(--gold-dark)";
+    el.style.fontWeight = "700";
+  } else {
+    el.style.color = "var(--muted)";
+    el.style.fontWeight = "500";
+  }
+}
+
+function lockExam() {
+  document.querySelectorAll('.option-item').forEach(li => {
+    li.style.pointerEvents = 'none';
+    li.style.opacity = li.classList.contains('selected') ? '1' : '0.45';
+  });
+  document.querySelectorAll('.nav-row .btn:not(#submitBtn)').forEach(b => b.disabled = true);
+  const card = document.querySelector('.card');
+  if (card && document.getElementById('optionsList')) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#fff5ee;border-right:4px solid var(--gold-dark);border-radius:10px;padding:12px 16px;font-size:.9rem;color:#7a3a1a;font-weight:600;margin-bottom:14px;';
+    banner.innerHTML = '⏰ הזמן נגמר – לא ניתן עוד לשנות תשובות. לחץ/י <strong>הבא</strong> כדי להגיש.';
+    card.insertBefore(banner, card.firstChild);
+  }
+}
+
+// ════════════════════════════════════════════════
+//  PAGE: TITLE
+// ════════════════════════════════════════════════
+function renderTitlePage() {
+  document.getElementById('app').innerHTML = `
+    <div class="card" style="margin-top:40px;">
+      <div class="title-hero">
+        <img src="שולחן-שבת.jpg" alt="שולחן שבת" class="hero-img" />
+        <h1>מבחן בהלכות שבת</h1>
+        <h2>מלאכת בישול ומלאכת בורר</h2>
+        <p style="font-size:.85rem;color:var(--muted);margin-top:6px;">על פי פניני הלכה – הרב אליעזר מלמד</p>
+      </div>
+
+      <div class="instructions-box">
+        <p><strong>הוראות המבחן:</strong></p>
+        <ul style="margin-top:8px;padding-right:18px;display:flex;flex-direction:column;gap:6px;">
+          <li>לפניך <strong>22 שאלות אמריקאיות</strong>.</li>
+          <li>עלייך לענות על <strong>20 שאלות בלבד</strong> לבחירתך.</li>
+          <li>כל תשובה נכונה שווה <strong>5 נקודות</strong> (מקסימום 100).</li>
+          <li>ניתן לנווט חופשית בין השאלות ולחזור ולשנות תשובות.</li>
+          <li>זמן המבחן: <strong>15 דקות</strong>. לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
+          <li>כל תלמיד/ה רשאי/ת להגיש את המבחן <strong>פעם אחת בלבד</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="form-grid">
+        <div class="input-group">
+          <label for="nameInput">שם מלא <span class="req">*</span></label>
+          <input type="text" id="nameInput" placeholder="שם פרטי ומשפחה" autocomplete="name" />
+          <div class="field-error" id="nameErr">נא להזין שם מלא</div>
+        </div>
+        <div class="input-group">
+          <label for="classSelect">כיתה <span class="req">*</span></label>
+          <select id="classSelect">
+            <option value="">בחר/י כיתה...</option>
+            ${CLASSES.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+          <div class="field-error" id="classErr">נא לבחור כיתה</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="handleStart()">
+        התחל/י במבחן ←
+      </button>
+    </div>
+  `;
+  document.getElementById('nameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('classSelect').focus();
+  });
+}
+
+function showFieldError(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('visible', show);
+}
+
+function handleStart() {
+  const name = document.getElementById('nameInput').value.trim();
+  const cls  = document.getElementById('classSelect').value;
+
+  let valid = true;
+  if (!name) { showFieldError('nameErr', true);  document.getElementById('nameInput').classList.add('error');  valid = false; }
+  else       { showFieldError('nameErr', false); document.getElementById('nameInput').classList.remove('error'); }
+  if (!cls)  { showFieldError('classErr', true); document.getElementById('classSelect').classList.add('error'); valid = false; }
+  else       { showFieldError('classErr', false); document.getElementById('classSelect').classList.remove('error'); }
+
+  if (!valid) return;
+
+  if (hasAlreadySubmitted(name, cls)) {
+    renderAlreadySubmittedPage(name, cls);
+    return;
+  }
+
+  studentName  = name;
+  studentClass = cls;
+  currentIndex = 0;
+  answers = new Array(TOTAL_Q).fill(null);
+  initShuffle(name + cls);
+  startTimer();
+  renderQuestionPage();
+}
+
+function renderAlreadySubmittedPage(name, cls) {
+  document.getElementById('app').innerHTML = `
+    <div class="card" style="margin-top:40px;">
+      <div class="already-banner">
+        <div class="ab-icon">🔒</div>
+        <h3>המבחן כבר הוגש</h3>
+        <p>שלום <strong>${name}</strong>, המבחן עבור כיתה <strong>${cls}</strong><br/>
+        כבר הוגש מהמכשיר הזה.<br/>
+        לא ניתן להגיש פעמיים.</p>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:24px;">
+        אם מדובר בטעות, אנא פנה/י למורה.
+      </p>
+      <button class="btn btn-outline btn-full" onclick="renderTitlePage()">חזרה לעמוד הכניסה</button>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+//  PAGE: QUESTION
+// ════════════════════════════════════════════════
+function renderQuestionPage() {
+  const q        = QUESTIONS[currentIndex];
+  const opts     = shuffledOpts[currentIndex];
+  const answered = answers.filter(a => a !== null).length;
+  const progress = ((currentIndex + 1) / TOTAL_Q) * 100;
+
+  document.getElementById('app').innerHTML = `
+    <div class="top-bar">
+      <span class="logo-badge">📖 מבחן הלכות שבת</span>
+      <span id="timerDisplay" class="progress-text">⏱ 15:00</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-fill" style="width:${progress}%"></div>
+    </div>
+
+    <div class="dots-container">
+      <div class="dots-title">ניווט מהיר</div>
+      <div class="q-dots">
+        ${QUESTIONS.map((_, i) => {
+          let cls = 'q-dot';
+          if (answers[i] !== null) cls += ' answered';
+          if (i === currentIndex)  cls += ' current';
+          return `<div class="${cls}" onclick="jumpTo(${i})" title="שאלה ${i+1}">${i+1}</div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-header">
+        <div class="q-num">${currentIndex + 1}</div>
+        <span class="q-section">${q.section}</span>
+      </div>
+      ${timeLocked ? '<div style="background:#fff5ee;border-right:4px solid var(--gold-dark);border-radius:10px;padding:12px 16px;font-size:.88rem;color:#7a3a1a;font-weight:600;margin-bottom:14px;">⏰ הזמן נגמר – לא ניתן לשנות תשובות. לחץ/י <strong>לסיכום</strong> כדי להגיש.</div>' : ''}
+      <div class="q-text">${q.text}</div>
+
+      <ul class="options-list" id="optionsList">
+        ${opts.map((opt, i) => `
+          <li class="option-item${answers[currentIndex] === opt.letter ? ' selected' : ''}${timeLocked ? ' locked' : ''}"
+              onclick="${timeLocked ? '' : `selectAnswer('${opt.letter}', this)`}">
+            <span class="opt-letter">${hebrewLetter(i)}</span>
+            <span class="opt-text">${opt.text}</span>
+          </li>
+        `).join('')}
+      </ul>
+
+      <p class="skip-notice" id="skipNotice">
+        ${answers[currentIndex] === null
+          ? `עדיין לא ענית • <strong>${answered}</strong> מתוך ${TOTAL_Q} נענו`
+          : `✔ ענית • <strong>${answered}</strong> מתוך ${TOTAL_Q} נענו`}
+      </p>
+
+      <div class="nav-row">
+        <button class="btn ${currentIndex === 0 ? 'btn-outline' : 'btn-secondary'}"
+                onclick="prevQuestion()" ${currentIndex === 0 ? 'disabled' : ''}>
+          → הקודם
+        </button>
+        <button class="btn btn-primary" onclick="nextQuestion()">
+          ${currentIndex === TOTAL_Q - 1 ? 'לסיכום ←' : 'הבא ←'}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function hebrewLetter(i) { return ['א','ב','ג','ד'][i] || (i+1); }
+
+function selectAnswer(letter, el) {
+  answers[currentIndex] = letter;
+  document.querySelectorAll('.option-item').forEach(li => li.classList.remove('selected'));
+  el.classList.add('selected');
+  const dot = document.querySelectorAll('.q-dot')[currentIndex];
+  if (dot) dot.classList.add('answered');
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('skipNotice').innerHTML =
+    `✔ ענית • <strong>${answered}</strong> מתוך ${TOTAL_Q} נענו`;
+}
+
+function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestionPage(); } }
+function nextQuestion() { if (currentIndex < TOTAL_Q - 1) { currentIndex++; renderQuestionPage(); } else renderSummaryPage(); }
+function jumpTo(i) { currentIndex = i; renderQuestionPage(); }
+
+// ════════════════════════════════════════════════
+//  PAGE: SUMMARY
+// ════════════════════════════════════════════════
+function renderSummaryPage() {
+  const answered   = answers.filter(a => a !== null).length;
+  const unanswered = TOTAL_Q - answered;
+  const ready      = answered >= REQUIRED;
+
+  document.getElementById('app').innerHTML = `
+    <div class="top-bar">
+      <span class="logo-badge">📖 מבחן הלכות שבת</span>
+      <span id="timerDisplay" class="progress-text">⏱</span>
+    </div>
+
+    <div class="card">
+      <div style="text-align:center;font-size:1.8rem;margin-bottom:8px">📋</div>
+      <h2 style="text-align:center;font-size:1.3rem;font-weight:800;color:var(--primary);margin-bottom:4px;">סיכום המבחן</h2>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:20px;">${studentName} | ${studentClass}</p>
+
+      <div class="summary-stats">
+        <div class="stat-card">
+          <div class="stat-num">${answered}</div>
+          <div class="stat-label">שאלות שנענו</div>
+        </div>
+        <div class="stat-card ${unanswered > 2 ? 'warn' : ''}">
+          <div class="stat-num">${unanswered}</div>
+          <div class="stat-label">שאלות ללא תשובה</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${TOTAL_Q}</div>
+          <div class="stat-label">סה"כ שאלות</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${REQUIRED}</div>
+          <div class="stat-label">מינימום נדרש</div>
+        </div>
+      </div>
+
+      ${!ready ? `
+        <div class="summary-warning">
+          ⚠️ ענית רק על <strong>${answered}</strong> שאלות. נדרשות לפחות ${REQUIRED}.
+          <br/>חזור/י ועני/י על עוד ${REQUIRED - answered} שאלות לפחות.
+        </div>` : `
+        <div style="background:var(--primary-pale);border-right:4px solid var(--primary);border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:.9rem;color:var(--primary);font-weight:600;">
+          ✅ ענית על ${answered} שאלות – מוכן/ה להגשה!
+          ${answered > REQUIRED ? '<br/><span style="font-weight:400;color:var(--muted);">אם ענית על יותר מ-20 – נלקחות 20 הטובות ביותר.</span>' : ''}
+        </div>`}
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" style="flex:1" onclick="currentIndex=0;renderQuestionPage()">← חזור לשאלות</button>
+        <button class="btn btn-primary" style="flex:1" id="submitBtn" onclick="submitExam()" ${!ready ? 'disabled' : ''}>הגש/י מבחן ✓</button>
+      </div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+//  GRADING
+// ════════════════════════════════════════════════
+function calcGrade() {
+  const results = QUESTIONS.map((q, i) => {
+    const given = answers[i];
+    if (given === null) return { q, given, status: 'skip' };
+    const isCorrect = given === q.correct;
+    return { q, given, isCorrect, status: isCorrect ? 'correct' : 'wrong' };
+  });
+
+  let correct = results.filter(r => r.status === 'correct').length;
+  const answeredResults = results.filter(r => r.status !== 'skip');
+
+  // If answered > 20, keep only top 20 (maximize)
+  if (answeredResults.length > REQUIRED) {
+    const sorted = [...answeredResults].sort((a,b) => (b.isCorrect?1:0)-(a.isCorrect?1:0));
+    correct = sorted.slice(0, REQUIRED).filter(r => r.isCorrect).length;
+  }
+
+  return { grade: correct * POINTS, correct, results };
+}
+
+function gradeMessage(g) {
+  if (g === 100) return "מושלם! הישג מרשים ביותר 🏆";
+  if (g >= 90)   return "מעולה! עבודה נפלאה 🌟";
+  if (g >= 80)   return "כל הכבוד! ציון טוב מאוד 👏";
+  if (g >= 70)   return "יפה! ציון טוב 👍";
+  if (g >= 60)   return "לא רע, אך יש מקום לשיפור.";
+  return "כדאי לחזור על החומר.";
+}
+
+async function submitExam() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> שולח...'; }
+  stopTimer();
+
+  const { grade, correct, results } = calcGrade();
+  const answered = answers.filter(a => a !== null).length;
+
+  // Send to Google Form
+  let submitOk = false;
+  try {
+    const body = new URLSearchParams();
+    body.append(ENTRY.studentName, studentName);
+    body.append(ENTRY.class,       studentClass);
+    body.append(ENTRY.grade,       String(grade));
+
+    await fetch(FORM_ACTION, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    });
+    submitOk = true;
+  } catch (e) {
+    console.warn('Google Form submission failed:', e);
+  }
+
+  markSubmitted(studentName, studentClass);
+  renderGradePage(grade, correct, results, answered, submitOk);
+}
+
+// ════════════════════════════════════════════════
+//  PAGE: GRADE
+// ════════════════════════════════════════════════
+function renderGradePage(grade, correct, results, answered, submitOk) {
+  stopTimer();
+  const deg = (grade / 100) * 360;
+
+  document.getElementById('app').innerHTML = `
+    <div class="top-bar">
+      <span class="logo-badge">📖 מבחן הלכות שבת</span>
+      <span class="progress-text">תוצאות</span>
+    </div>
+
+    <div class="card">
+      <div class="grade-hero">
+        <div class="grade-circle"
+             style="background:conic-gradient(var(--primary) ${deg}deg, var(--accent) ${deg}deg)">
+          <div class="grade-inner">
+            <div class="grade-num">${grade}</div>
+            <div class="grade-label">נקודות</div>
+          </div>
+        </div>
+        <div class="grade-name">${studentName}</div>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">${studentClass}</p>
+        <div class="grade-msg">${gradeMessage(grade)}</div>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;font-size:.88rem;color:var(--muted);">
+          <span>✅ <strong>${correct}</strong> נכון</span>
+          <span>❌ <strong>${results.filter(r=>r.status==='wrong').length}</strong> שגוי</span>
+          <span>⏭ <strong>${results.filter(r=>r.status==='skip').length}</strong> דולג</span>
+        </div>
+      </div>
+
+      <div class="saved-notice ${submitOk ? '' : 'error'}">
+        ${submitOk
+          ? '✅ הציון נשלח בהצלחה לגיליון של המורה'
+          : '⚠️ לא ניתן היה לשלוח את הציון כעת. אנא צור/י קשר עם המורה.'}
+      </div>
+
+      <div class="answers-review">
+        <h3>פירוט תשובות</h3>
+        ${results.map((r, i) => {
+          const label = r.status === 'correct'
+            ? `<span class="badge-correct">✓ נכון</span>`
+            : r.status === 'wrong'
+              ? `<span class="badge-wrong">✗ שגוי – הנכון: ${r.q.correct}</span>`
+              : `<span class="badge-skip">דולג</span>`;
+          return `
+            <div class="review-item">
+              <div class="review-num">${i+1}.</div>
+              <div class="review-text">
+                <div style="margin-bottom:4px;">${r.q.text.slice(0,70)}${r.q.text.length>70?'…':''}</div>
+                ${label}
+              </div>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════
+renderTitlePage();
+</script>
+
+<footer class="site-footer">
+  <svg width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M7 10.5c0-1.657 1.343-3 3-3s3 1.343 3 3-1.343 3-3 3-3-1.343-3-3z" stroke="currentColor" stroke-width="1.4"/>
+    <path d="M10 4v2M10 14v2M4 10h2M14 10h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+  </svg>
+  <span>© אשכולי טכנולוגיות למידה</span>
+</footer>
+
+</body>
+</html>
