@@ -10,20 +10,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --primary:       #2d6a4f;
-      --primary-light: #52b788;
-      --primary-pale:  #d8f3dc;
-      --accent:        #b7e4c7;
-      --gold:          #f4a261;
-      --gold-dark:     #e76f51;
-      --bg:            #f6fdf8;
-      --surface:       #ffffff;
-      --border:        #cce5d6;
-      --text:          #1b3a2e;
-      --muted:         #5a7a68;
+      --primary:       #7a4f2d;
+      --primary-light: #c48a52;
+      --primary-pale:  #f5ede0;
+      --accent:        #e8d0b0;
+      --gold:          #d4a853;
+      --gold-dark:     #b07d2a;
+      --bg:            #fdf8f2;
+      --surface:       #fffcf7;
+      --border:        #e5d4bb;
+      --text:          #3a2a18;
+      --muted:         #8a7060;
       --radius:        14px;
-      --shadow:        0 4px 24px rgba(45,106,79,.10);
-      --shadow-lg:     0 8px 40px rgba(45,106,79,.16);
+      --shadow:        0 4px 24px rgba(122,79,45,.10);
+      --shadow-lg:     0 8px 40px rgba(122,79,45,.16);
     }
 
     html, body {
@@ -153,7 +153,7 @@
     .input-group select:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(45,106,79,.12);
+      box-shadow: 0 0 0 3px rgba(122,79,45,.12);
     }
     .input-group input.error,
     .input-group select.error { border-color: var(--gold-dark); }
@@ -190,8 +190,8 @@
       transition: all .2s;
       user-select: none;
     }
-    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 3px 12px rgba(45,106,79,.25); }
-    .btn-primary:hover { background: #235c40; transform: translateY(-1px); }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 3px 12px rgba(122,79,45,.25); }
+    .btn-primary:hover { background: #5e3618; transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
     .btn-secondary { background: var(--primary-pale); color: var(--primary); border: 2px solid var(--accent); }
     .btn-secondary:hover { background: var(--accent); }
@@ -297,7 +297,7 @@
     .review-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--bg); align-items: flex-start; }
     .review-num { font-weight: 700; color: var(--muted); min-width: 24px; }
     .review-text { font-size: .9rem; flex: 1; line-height: 1.4; }
-    .badge-correct { color: #1d7d4a; background: #d8f3dc; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
+    .badge-correct { color: #7a4f2d; background: #f5ede0; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
     .badge-wrong   { color: #b83232; background: #fde0e0; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
     .badge-skip    { color: #8a6000; background: #fef3cd; border-radius: 99px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
 
