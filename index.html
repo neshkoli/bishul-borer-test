@@ -329,6 +329,28 @@
 
     .hidden { display: none !important; }
 
+    /* ─── Loading / Closed screens ─── */
+    .status-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 20px;
+      text-align: center;
+      animation: fadeIn .35s ease;
+    }
+    .status-screen .status-icon { font-size: 3rem; }
+    .status-screen h2 { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
+    .status-screen p  { font-size: .95rem; color: var(--muted); max-width: 320px; line-height: 1.6; }
+    .spinner-ring {
+      width: 48px; height: 48px;
+      border: 4px solid var(--accent);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
     /* ─── Extra time checkbox ─── */
     .extra-time-row {
       display: flex;
@@ -428,6 +450,10 @@
 //  GOOGLE FORM CONFIG
 // ════════════════════════════════════════════════
 const FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSejOxa8L7ak7Q7LXhrU7xSKsXcico3y2FuwOFCkJ5Arr1njtw/formResponse";
+
+// ── Paste your Apps Script Web App URL here after deployment ──────
+// See form-status-checker.gs for setup instructions
+const STATUS_CHECK_URL = "";
 const ENTRY = {
   studentName: "entry.1066323799",
   time:        "entry.489788613",
@@ -1198,9 +1224,52 @@ function renderGradePage(grade, correct, results, answered, submitOk) {
 }
 
 // ════════════════════════════════════════════════
-//  BOOT
+//  BOOT – check form status first
 // ════════════════════════════════════════════════
-renderTitlePage();
+function renderLoadingScreen() {
+  document.getElementById('app').innerHTML = `
+    <div class="status-screen">
+      <div class="spinner-ring"></div>
+      <p style="color:var(--muted);font-size:.95rem;">בודק זמינות המבחן…</p>
+    </div>`;
+}
+
+function renderClosedScreen() {
+  document.getElementById('app').innerHTML = `
+    <div class="card" style="margin-top:60px;text-align:center;">
+      <div class="status-screen" style="min-height:auto;padding:12px 0;">
+        <div class="status-icon">🔒</div>
+        <h2>המבחן סגור כעת למענה</h2>
+        <p>המורה טרם פתח/ה את המבחן, או שזמן ההגשה עבר.<br/>אנא פנה/י למורה לקבלת הרשאה.</p>
+      </div>
+    </div>`;
+}
+
+async function boot() {
+  // If no status URL configured – go straight to title (dev/local mode)
+  if (!STATUS_CHECK_URL) {
+    renderTitlePage();
+    return;
+  }
+
+  renderLoadingScreen();
+
+  try {
+    const res  = await fetch(STATUS_CHECK_URL);
+    const data = await res.json();
+    if (data.accepting === false) {
+      renderClosedScreen();
+    } else {
+      renderTitlePage();
+    }
+  } catch (e) {
+    // Network error or script not deployed yet → fail open (show the test)
+    console.warn('Status check failed, opening anyway:', e);
+    renderTitlePage();
+  }
+}
+
+boot();
 </script>
 
 <footer class="site-footer">
