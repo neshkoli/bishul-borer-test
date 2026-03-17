@@ -438,8 +438,8 @@ const ENTRY = {
 // ════════════════════════════════════════════════
 //  TIMER CONFIG
 // ════════════════════════════════════════════════
-const EXAM_MINUTES_BASE  = 15;
-const EXAM_MINUTES_EXTRA = 20;
+const EXAM_MINUTES_BASE  = 25;
+const EXAM_MINUTES_EXTRA = 30;
 let timerInterval  = null;
 let timerEnd       = null;
 let examStartTime  = null;
@@ -843,7 +843,7 @@ function renderTitlePage() {
           <li>עלייך לענות על <strong>20 שאלות בלבד</strong> לבחירתך.</li>
           <li>כל תשובה נכונה שווה <strong>5 נקודות</strong> (מקסימום 100).</li>
           <li>ניתן לנווט חופשית בין השאלות ולחזור ולשנות תשובות.</li>
-          <li>זמן המבחן: <strong>15 דקות</strong> (או 20 דקות עם תוספת זמן). לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
+          <li>זמן המבחן: <strong>25 דקות</strong> (או 30 דקות עם תוספת זמן). לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
           <li>כל תלמיד/ה רשאי/ת להגיש את המבחן <strong>פעם אחת בלבד</strong>.</li>
         </ul>
       </div>
@@ -868,7 +868,7 @@ function renderTitlePage() {
         <input type="checkbox" id="extraTimeCheck" />
         <span class="extra-time-label">
           <strong>תוספת זמן</strong>
-          <span>זמן המבחן יוארך ל-20 דקות</span>
+          <span>זמן המבחן יוארך ל-30 דקות</span>
         </span>
       </label>
 
