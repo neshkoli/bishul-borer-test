@@ -464,8 +464,18 @@ const ENTRY = {
 // ════════════════════════════════════════════════
 //  TIMER CONFIG
 // ════════════════════════════════════════════════
-const EXAM_MINUTES_BASE  = 25;
-const EXAM_MINUTES_EXTRA = 30;
+const EXAM_MINUTES_BASE  = 30;
+const EXAM_MINUTES_EXTRA = 38;
+
+// Per-class overrides: { base, extra }
+const CLASS_TIME = {
+  "יב 3": { base: 45, extra: 60 },
+};
+
+function getMinutes(cls, withExtra) {
+  const t = CLASS_TIME[cls] || { base: EXAM_MINUTES_BASE, extra: EXAM_MINUTES_EXTRA };
+  return withExtra ? t.extra : t.base;
+}
 let timerInterval  = null;
 let timerEnd       = null;
 let examStartTime  = null;
@@ -727,7 +737,7 @@ const QUESTIONS = [
 const TOTAL_Q  = 22;
 const REQUIRED = 20;
 const POINTS   = 5;
-const CLASSES  = ["יב 2", "יב 4", "יב 5"];
+const CLASSES  = ["יב 2", "יב 3", "יב 4", "יב 5"];
 
 // ════════════════════════════════════════════════
 //  STATE
@@ -780,7 +790,7 @@ function initShuffle(name) {
 //  TIMER
 // ════════════════════════════════════════════════
 function startTimer() {
-  const minutes = extraTime ? EXAM_MINUTES_EXTRA : EXAM_MINUTES_BASE;
+  const minutes = getMinutes(studentClass, extraTime);
   examStartTime = Date.now();
   timerEnd      = examStartTime + minutes * 60 * 1000;
   timeLocked    = false;
@@ -804,7 +814,7 @@ function tickTimer() {
   if (!el) return;
 
   const remaining = timerEnd - Date.now();
-  const total     = (extraTime ? EXAM_MINUTES_EXTRA : EXAM_MINUTES_BASE) * 60 * 1000;
+  const total     = getMinutes(studentClass, extraTime) * 60 * 1000;
 
   if (remaining <= 0) {
     el.textContent        = "⏰ הזמן נגמר!";
@@ -869,7 +879,7 @@ function renderTitlePage() {
           <li>עלייך לענות על <strong>20 שאלות בלבד</strong> לבחירתך.</li>
           <li>כל תשובה נכונה שווה <strong>5 נקודות</strong> (מקסימום 100).</li>
           <li>ניתן לנווט חופשית בין השאלות ולחזור ולשנות תשובות.</li>
-          <li>זמן המבחן: <strong>25 דקות</strong> (או 30 דקות עם תוספת זמן). לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
+          <li>זמן המבחן: <strong id="instrTime">30 דקות</strong> (או <strong id="instrTimeExtra">38 דקות</strong> עם תוספת זמן). לאחר מכן לא ניתן לשנות תשובות, אך ניתן להגיש.</li>
           <li>כל תלמיד/ה רשאי/ת להגיש את המבחן <strong>פעם אחת בלבד</strong>.</li>
         </ul>
       </div>
@@ -894,7 +904,7 @@ function renderTitlePage() {
         <input type="checkbox" id="extraTimeCheck" />
         <span class="extra-time-label">
           <strong>תוספת זמן</strong>
-          <span>זמן המבחן יוארך ל-30 דקות</span>
+          <span id="extraTimeDesc">זמן המבחן יוארך ל-38 דקות</span>
         </span>
       </label>
 
@@ -905,6 +915,15 @@ function renderTitlePage() {
   `;
   document.getElementById('nameInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('classSelect').focus();
+  });
+  document.getElementById('classSelect').addEventListener('change', function() {
+    const t = CLASS_TIME[this.value] || { base: EXAM_MINUTES_BASE, extra: EXAM_MINUTES_EXTRA };
+    const instrTime      = document.getElementById('instrTime');
+    const instrTimeExtra = document.getElementById('instrTimeExtra');
+    const extraTimeDesc  = document.getElementById('extraTimeDesc');
+    if (instrTime)      instrTime.textContent      = t.base  + ' דקות';
+    if (instrTimeExtra) instrTimeExtra.textContent = t.extra + ' דקות';
+    if (extraTimeDesc)  extraTimeDesc.textContent  = 'זמן המבחן יוארך ל-' + t.extra + ' דקות';
   });
 }
 
