@@ -1291,16 +1291,22 @@ async function checkAppsScript() {
 }
 
 async function boot() {
+  // Local file:// development → skip gate, always open
+  if (location.protocol === 'file:') {
+    renderTitlePage();
+    return;
+  }
+
   renderLoadingScreen();
 
   try {
     let isOpen;
 
     if (STATUS_CHECK_URL) {
-      // Primary: Apps Script (synced with Google Form toggle)
+      // Apps Script: synced with Google Form toggle
       isOpen = await checkAppsScript();
     } else {
-      // Fallback: status.json in the repo
+      // Default: status.json in the repo
       isOpen = await checkStatusJson();
     }
 
@@ -1310,10 +1316,9 @@ async function boot() {
       renderClosedScreen();
     }
   } catch (e) {
-    // file:// local testing → always open
-    // GitHub Pages fetch error → fail open
-    console.warn('Status check failed, opening:', e);
-    renderTitlePage();
+    // Any fetch error on a real origin → fail CLOSED (safe default)
+    console.warn('Status check failed, closing for safety:', e);
+    renderClosedScreen();
   }
 }
 
