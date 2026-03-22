@@ -1276,26 +1276,43 @@ function renderClosedScreen() {
     </div>`;
 }
 
-async function boot() {
-  // If no status URL configured – go straight to title (dev/local mode)
-  if (!STATUS_CHECK_URL) {
-    renderTitlePage();
-    return;
-  }
+async function checkStatusJson() {
+  // Fetch status.json from same origin (works on GitHub Pages, not on file://)
+  const res = await fetch('./status.json?_=' + Date.now());
+  if (!res.ok) throw new Error('status.json not found');
+  const data = await res.json();
+  return data.open !== false;
+}
 
+async function checkAppsScript() {
+  const res  = await fetch(STATUS_CHECK_URL);
+  const data = await res.json();
+  return data.accepting !== false;
+}
+
+async function boot() {
   renderLoadingScreen();
 
   try {
-    const res  = await fetch(STATUS_CHECK_URL);
-    const data = await res.json();
-    if (data.accepting === false) {
-      renderClosedScreen();
+    let isOpen;
+
+    if (STATUS_CHECK_URL) {
+      // Primary: Apps Script (synced with Google Form toggle)
+      isOpen = await checkAppsScript();
     } else {
+      // Fallback: status.json in the repo
+      isOpen = await checkStatusJson();
+    }
+
+    if (isOpen) {
       renderTitlePage();
+    } else {
+      renderClosedScreen();
     }
   } catch (e) {
-    // Network error or script not deployed yet → fail open (show the test)
-    console.warn('Status check failed, opening anyway:', e);
+    // file:// local testing → always open
+    // GitHub Pages fetch error → fail open
+    console.warn('Status check failed, opening:', e);
     renderTitlePage();
   }
 }
